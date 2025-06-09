@@ -26,9 +26,6 @@ def save_to_json(data: Any, filename: str) -> None:
 def get_stock_list() -> List[Dict[str, Any]]:
     """
     Fetch the complete list of stocks from FMP API.
-    
-    Returns:
-        List[Dict[str, Any]]: List of stock data including symbols, names, and other details
     """
     url = f"https://financialmodelingprep.com/stable/stock/list?apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
@@ -36,27 +33,12 @@ def get_stock_list() -> List[Dict[str, Any]]:
 def extract_symbols(stock_data: List[Dict[str, Any]]) -> List[str]:
     """
     Extract stock symbols from stock data.
-    
-    Args:
-        stock_data (List[Dict[str, Any]]): List of stock data dictionaries
-        
-    Returns:
-        List[str]: List of stock symbols
     """
     return [stock['symbol'] for stock in stock_data]
 
 def get_analyst_estimates(symbol: str, period: str = "annual", page: int = 0, limit: int = 10) -> Dict[str, Any]:
     """
     Fetch analyst estimates for a specific stock.
-    
-    Args:
-        symbol (str): Stock symbol (e.g., 'AAPL')
-        period (str): Period of estimates ('annual' or 'quarter')
-        page (int): Page number for pagination
-        limit (int): Number of results per page
-        
-    Returns:
-        Dict[str, Any]: Analyst estimates data
     """
     url = f"https://financialmodelingprep.com/stable/analyst-estimates?symbol={symbol}&period={period}&page={page}&limit={limit}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
@@ -64,15 +46,6 @@ def get_analyst_estimates(symbol: str, period: str = "annual", page: int = 0, li
 def get_sma(symbol: str, period_length: int = 10, timeframe: str = "1day") -> Dict[str, Any]:
     """
     Fetch Simple Moving Average (SMA) technical indicator data.
-    
-    Args:
-        symbol (str): Stock symbol (e.g., 'AAPL')
-        period_length (int): Number of periods for SMA calculation (default: 10)
-        timeframe (str): Time interval for the data (default: '1day')
-            Options: '1min', '5min', '15min', '30min', '1hour', '4hour', '1day', '1week', '1month'
-        
-    Returns:
-        Dict[str, Any]: SMA technical indicator data
     """
     url = f"https://financialmodelingprep.com/stable/technical-indicators/sma?symbol={symbol}&periodLength={period_length}&timeframe={timeframe}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
@@ -106,36 +79,12 @@ def get_adx(symbol: str, period_length: int = 10, timeframe: str = "1day") -> Di
     return get_jsonparsed_data(url)
 
 def get_latest_news(page: int = 0, limit: int = 20) -> List[Dict[str, Any]]:
-    """
-    Fetch the latest stock market news.
-    
-    Args:
-        page (int): Page number for pagination
-        limit (int): Number of news items per page
-        
-    Returns:
-        List[Dict[str, Any]]: List of news articles with details like title, text, date, etc.
-    """
     url = f"https://financialmodelingprep.com/stable/news/stock-latest?page={page}&limit={limit}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
 
 def get_price_target_news(symbol: str, page: int = 0, limit: int = 10) -> List[Dict[str, Any]]:
     """
     Fetch price target news for a specific stock.
-    
-    Args:
-        symbol (str): Stock symbol (e.g., 'AAPL')
-        page (int): Page number for pagination
-        limit (int): Number of news items per page
-        
-    Returns:
-        List[Dict[str, Any]]: List of price target news articles with details like:
-            - Title
-            - Text
-            - Date
-            - Price target
-            - Analyst firm
-            - Rating
     """
     url = f"https://financialmodelingprep.com/stable/price-target-news?symbol={symbol}&page={page}&limit={limit}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
@@ -143,18 +92,6 @@ def get_price_target_news(symbol: str, page: int = 0, limit: int = 10) -> List[D
 def get_historical_grades(symbol: str) -> List[Dict[str, Any]]:
     """
     Fetch historical stock grades for a specific stock.
-    
-    Args:
-        symbol (str): Stock symbol (e.g., 'AAPL')
-        
-    Returns:
-        List[Dict[str, Any]]: List of historical grades with details like:
-            - Date
-            - Grade
-            - Previous grade
-            - Analyst
-            - Firm
-            - Action (upgrade/downgrade)
     """
     url = f"https://financialmodelingprep.com/stable/grades-historical?symbol={symbol}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
@@ -162,17 +99,6 @@ def get_historical_grades(symbol: str) -> List[Dict[str, Any]]:
 def get_dividends(symbol: str) -> List[Dict[str, Any]]:
     """
     Fetch dividend data for a specific stock.
-    
-    Args:
-        symbol (str): Stock symbol (e.g., 'AAPL')
-        
-    Returns:
-        List[Dict[str, Any]]: List of dividend data with details like:
-            - Date
-            - Dividend amount
-            - Dividend yield
-            - Ex-dividend date
-            - Payment date
     """
     url = f"https://financialmodelingprep.com/stable/dividends?symbol={symbol}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
@@ -180,12 +106,6 @@ def get_dividends(symbol: str) -> List[Dict[str, Any]]:
 def get_custom_dcf(symbol: str) -> Dict[str, Any]:
     """
     Fetch custom DCF analysis for a specific stock using the FMP Custom DCF Advanced API.
-    
-    Args:
-        symbol (str): Stock symbol (e.g., 'AAPL')
-        
-    Returns:
-        Dict[str, Any]: Detailed DCF analysis results
     """
     url = f"https://financialmodelingprep.com/stable/custom-discounted-cash-flow?symbol={symbol}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
@@ -194,14 +114,11 @@ def merge_indicators_by_date(indicators: Dict[str, Any]) -> List[Dict[str, Any]]
     """
     Merge all technical indicators by date.
     """
-    # Create a dictionary to store merged data by date
     merged_data = defaultdict(dict)
     
-    # Process each indicator type
     for indicator_name, indicator_data in indicators.items():
         for data_point in indicator_data:
             date = data_point['date']
-            # Copy all fields except the indicator value
             if date not in merged_data:
                 merged_data[date].update({
                     'date': date,
@@ -211,10 +128,8 @@ def merge_indicators_by_date(indicators: Dict[str, Any]) -> List[Dict[str, Any]]
                     'close': data_point.get('close'),
                     'volume': data_point.get('volume')
                 })
-            # Add the indicator value
             merged_data[date][indicator_name] = data_point.get(indicator_name)
     
-    # Convert to list and sort by date
     result = list(merged_data.values())
     result.sort(key=lambda x: x['date'], reverse=True)
     return result
@@ -236,52 +151,27 @@ def get_all_technical_indicators(symbol: str, period_length: int = 10000, timefr
     return indicators
 
 def get_historical_employee_count(symbol: str, limit: int = 100) -> List[Dict[str, Any]]:
-    """
-    Fetch historical employee count data for a company.
-    
-    Args:
-        symbol (str): Stock symbol (e.g., 'AAPL')
-        limit (int): Maximum number of records to return (default: 100, max: 10000)
-        
-    Returns:
-        List[Dict[str, Any]]: List of historical employee count records with details like:
-            - Symbol
-            - CIK
-            - Acceptance time
-            - Period of report
-            - Company name
-            - Form type
-            - Filing date
-            - Employee count
-            - Source URL
-    """
     url = f"https://financialmodelingprep.com/stable/historical-employee-count?symbol={symbol}&limit={limit}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
 
 def get_shares_float(symbol: str) -> Dict[str, Any]:
-
     url = f"https://financialmodelingprep.com/stable/shares-float?symbol={symbol}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
 
-def get_income_statement(symbol: str, limit: int = 120) -> List[Dict[str, Any]]:
-    """
-    Fetch income statement data.
-    """
-    url = f"https://financialmodelingprep.com/stable/income-statement?symbol={symbol}&limit={limit}&apikey={FMP_API_KEY}"
+def get_historical_market_cap(symbol: str, limit: int = 10000) -> List[Dict[str, Any]]:
+    url = f"https://financialmodelingprep.com/stable/historical-market-capitalization?symbol={symbol}&limit={limit}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
 
-def get_balance_sheet(symbol: str, limit: int = 120) -> List[Dict[str, Any]]:
-    """
-    Fetch balance sheet data.
-    """
-    url = f"https://financialmodelingprep.com/stable/balance-sheet-statement?symbol={symbol}&limit={limit}&apikey={FMP_API_KEY}"
+def get_income_statement(symbol: str, limit: int = 10000, period: str = "FY") -> List[Dict[str, Any]]:
+    url = f"https://financialmodelingprep.com/stable/income-statement?symbol={symbol}&limit={limit}&period={period}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
 
-def get_cash_flow(symbol: str, limit: int = 120) -> List[Dict[str, Any]]:
-    """
-    Fetch cash flow statement data.
-    """
-    url = f"https://financialmodelingprep.com/stable/cash-flow-statement?symbol={symbol}&limit={limit}&apikey={FMP_API_KEY}"
+def get_balance_sheet(symbol: str, limit: int = 10000, period: str = "FY") -> List[Dict[str, Any]]:
+    url = f"https://financialmodelingprep.com/stable/balance-sheet-statement?symbol={symbol}&limit={limit}&period={period}&apikey={FMP_API_KEY}"
+    return get_jsonparsed_data(url)
+
+def get_cash_flow(symbol: str, limit: int = 10000, period: str = "FY") -> List[Dict[str, Any]]:
+    url = f"https://financialmodelingprep.com/stable/cash-flow-statement?symbol={symbol}&limit={limit}&period={period}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
 
 def get_key_metrics(symbol: str, limit: int = 120) -> List[Dict[str, Any]]:
@@ -298,39 +188,74 @@ def get_financial_ratios(symbol: str, limit: int = 120) -> List[Dict[str, Any]]:
     url = f"https://financialmodelingprep.com/stable/ratios?symbol={symbol}&limit={limit}&apikey={FMP_API_KEY}"
     return get_jsonparsed_data(url)
 
-def merge_fundamental_data(symbol: str) -> List[Dict[str, Any]]:
+def merge_quarterly_fundamental_data(symbol: str) -> List[Dict[str, Any]]:
     """
-    Fetch and merge all fundamental data by date, handling overlapping fields.
-    
-    Args:
-        symbol (str): Stock symbol (e.g., 'AAPL')
-        
-    Returns:
-        List[Dict[str, Any]]: Merged fundamental data sorted by date
+    Merge all quarterly financial data into a single list, combining income statement,
+    balance sheet, and cash flow data for each date.
     """
-    # Fetch all fundamental data
-    data_sources = {
-        'income': get_income_statement(symbol),
-        'balance': get_balance_sheet(symbol),
-        'cash_flow': get_cash_flow(symbol),
-        'metrics': get_key_metrics(symbol),
-        'ratios': get_financial_ratios(symbol)
-    }
+    # Get all types of financial data
+    income_data = get_income_statement(symbol, period='quarter')
+    balance_data = get_balance_sheet(symbol, period='quarter')
+    cash_flow_data = get_cash_flow(symbol, period='quarter')
     
     # Create a dictionary to store merged data by date
     merged_data = defaultdict(dict)
     
-    # Process all data sources
-    for source_name, data in data_sources.items():
+    # Process each type of data
+    for data in [income_data, balance_data, cash_flow_data]:
         for item in data:
             date = item['date']
             # Add all fields from the item to the merged data
             merged_data[date].update(item)
     
-    # Convert to list and sort by date
+    # Convert to list and sort by date in descending order
     result = list(merged_data.values())
     result.sort(key=lambda x: x['date'], reverse=True)
     return result
+
+def get_owner_earnings(symbol: str, limit: int = 10000) -> List[Dict[str, Any]]:
+    """
+    Fetch owner earnings data for a company.
+    """
+    url = f"https://financialmodelingprep.com/stable/owner-earnings?symbol={symbol}&limit={limit}&apikey={FMP_API_KEY}"
+    return get_jsonparsed_data(url)
+
+def get_enterprise_values(symbol: str, limit: int = 10000) -> List[Dict[str, Any]]:
+    """
+    Fetch enterprise values data for a company.
+    """
+    url = f"https://financialmodelingprep.com/stable/enterprise-values?symbol={symbol}&limit={limit}&apikey={FMP_API_KEY}"
+    return get_jsonparsed_data(url)
+
+def get_financial_growth(symbol: str, limit: int = 10000, period: str = "FY") -> List[Dict[str, Any]]:
+    """
+    Fetch comprehensive financial growth data for a company.
+    """
+    url = f"https://financialmodelingprep.com/stable/financial-growth?symbol={symbol}&limit={limit}&period={period}&apikey={FMP_API_KEY}"
+    return get_jsonparsed_data(url)
+
+def merge_financial_growth_data(symbol: str) -> List[Dict[str, Any]]:
+    """
+    Merge quarterly growth data into a single sorted list.
+    """
+    growth_data = get_financial_growth(symbol, period='quarter')
+    growth_data.sort(key=lambda x: x['date'], reverse=True)
+    return growth_data
+
+def get_as_reported_financial_statement(symbol: str, limit: int = 10000, period: str = "quarter") -> List[Dict[str, Any]]:
+    """
+    Fetch comprehensive as-reported financial statements data for a company.
+    """
+    url = f"https://financialmodelingprep.com/stable/financial-statement-full-as-reported?symbol={symbol}&limit={limit}&period={period}&apikey={FMP_API_KEY}"
+    return get_jsonparsed_data(url)
+
+def merge_as_reported_financial_data(symbol: str) -> List[Dict[str, Any]]:
+    """
+    Merge all as-reported financial statements into a single sorted list.
+    """
+    financial_data = get_as_reported_financial_statement(symbol, period='quarter')
+    financial_data.sort(key=lambda x: x['date'], reverse=True)
+    return financial_data
 
 def main():
     # Get complete stock list
@@ -381,11 +306,41 @@ def main():
     save_to_json(shares_float_data, f"{symbol}_shares_float.json")
     print(f"Shares float data for {symbol} has been saved to {symbol}_shares_float.json")
     
+    # Get historical market cap data for Apple
+    print(f"\nFetching historical market cap data for {symbol}...")
+    market_cap_data = get_historical_market_cap(symbol)
+    save_to_json(market_cap_data, f"{symbol}_historical_market_cap.json")
+    print(f"Historical market cap data for {symbol} has been saved to {symbol}_historical_market_cap.json")
+    
     # Get and merge fundamental data for Apple
     print(f"\nFetching and merging fundamental data for {symbol}...")
-    fundamental_data = merge_fundamental_data(symbol)
+    fundamental_data = merge_quarterly_fundamental_data(symbol)
     save_to_json(fundamental_data, f"{symbol}_fundamental_data.json")
     print(f"Merged fundamental data for {symbol} has been saved to {symbol}_fundamental_data.json")
+    
+    # Get owner earnings data
+    print(f"\nFetching owner earnings data for {symbol}...")
+    owner_earnings_data = get_owner_earnings(symbol)
+    save_to_json(owner_earnings_data, f"{symbol}_owner_earnings.json")
+    print(f"Owner earnings data for {symbol} has been saved to {symbol}_owner_earnings.json")
+    
+    # Get enterprise values data
+    print(f"\nFetching enterprise values data for {symbol}...")
+    enterprise_values_data = get_enterprise_values(symbol)
+    save_to_json(enterprise_values_data, f"{symbol}_enterprise_values.json")
+    print(f"Enterprise values data for {symbol} has been saved to {symbol}_enterprise_values.json")
+    
+    # Get and merge growth data
+    print(f"\nFetching and merging growth data for {symbol}...")
+    merged_growth = merge_financial_growth_data(symbol)
+    save_to_json(merged_growth, f"{symbol}_financial_growth.json")
+    print(f"Merged growth data for {symbol} has been saved to {symbol}_financial_growth.json")
+    
+    # Get and merge all as-reported financial statements
+    print(f"\nFetching and merging all as-reported financial statements for {symbol}...")
+    merged_as_reported = merge_as_reported_financial_data(symbol)
+    save_to_json(merged_as_reported, f"{symbol}_as_reported_financial_statements.json")
+    print(f"Comprehensive as-reported financial statements for {symbol} have been saved to {symbol}_as_reported_financial_statements.json")
     
     # Get all technical indicators for Apple
     print(f"\nFetching technical indicators for {symbol}...")
